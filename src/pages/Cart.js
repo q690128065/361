@@ -20,31 +20,23 @@ class Cart extends Component {
     this.checkList = []
   }
   onSelect(item) {
-    let add = false
-    if (this.checkList && this.checkList.length) {
-      this.checkList.some((v, i) => {
-        if (v === item.id) {
-          this.checkList.splice(i);
-        } else {
-          this.checkList.push(item.id);
-          add = true
-          console.log('push,length>0')
-        }
-      })
+    if (this.checkList.indexOf(item.id) !== -1) {
+      console.log(this.checkList.indexOf(item.id))
+      this.checkList.splice(this.checkList.indexOf(item.id), 1);
     } else {
       this.checkList.push(item.id);
-      add = true
-      console.log('push')
     }
-    console.log(add)
-    if (add) {
-      this.counts += item.count;
-      this.prices += item.price * item.count;
-    } else {
-      this.counts -= item.count;
-      this.prices -= item.price * item.count;
-    }
-    add = false;
+    /* 总数，总价计算 */
+    this.prices = 0;
+    this.counts = 0;
+    this.state.data.forEach(v => {
+      this.checkList.forEach(cv => {
+        if (cv === v.id) {
+          this.prices += v.count * v.price;
+          this.counts += v.count;
+        }
+      })
+    });
     this.setState({
       checkStateList: this.checkList,
       prices: this.prices,
@@ -53,27 +45,7 @@ class Cart extends Component {
   }
 
   onAll() {
-    this.refs["all"].className =
-      this.refs["all"].className === "active" ? "" : "active";
-    this.state.data.map((item, index) => {
-      /* 所有商品选择 */
-      this.state.data[index].active =
-        this.refs["all"].className === "active" ? true : false;
-
-
-      if (this.refs["all"].className === "active") {
-        this.state.counts += item.count;
-        this.state.prices += item.count * item.price;
-      } else {
-        this.state.counts -= item.count;
-        this.state.prices -= item.count * item.price;
-      }
-    });
-    this.setState({
-      data: this.state.data,
-      counts: this.state.counts,
-      prices: this.state.prices
-    });
+    
   }
 
   render() {
@@ -109,7 +81,7 @@ class Cart extends Component {
               <CartItem key={item.id}>
                 <span
                   onClick={this.onSelect.bind(this, item)}
-                  className={this.state.checkStateList.some((v) => Boolean(v === item.id)) ? "active" : ""}
+                  className={checkStateList.indexOf(item.id) !== -1 ? "active" : ""}
                 />
                 <Link to={`/detail/${item.id}`}>
                   <img src={item.src} alt="" />
