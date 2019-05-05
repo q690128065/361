@@ -10,38 +10,46 @@ class Cart extends Component {
     this.state = {
       data: JSON.parse(localStorage.Cart),
       counts: 0,
-      prices: 0
+      prices: 0,
+      checkStateList: []
     };
 
     this.activeNum = 0;
     this.counts = 0;
     this.prices = 0;
+    this.checkList = []
   }
   onSelect(item) {
-    this.state.data.map((product, index) => {
-      if (item.id === product.id) {
-        this.state.data[index].active = !this.state.data[index].active;
-        this.state.data[index].active
-          ? (this.activeNum += 1)
-          : (this.activeNum -= 1);
-        if (this.state.data[index].active) {
-          this.state.counts += item.count;
-          this.state.prices += item.count * item.price;
+    let add = false
+    if (this.checkList && this.checkList.length) {
+      this.checkList.some((v, i) => {
+        if (v === item.id) {
+          this.checkList.splice(i);
         } else {
-          this.state.counts -= item.count;
-          this.state.prices -= item.count * item.price;
+          this.checkList.push(item.id);
+          add = true
+          console.log('push,length>0')
         }
-      }
-    });
+      })
+    } else {
+      this.checkList.push(item.id);
+      add = true
+      console.log('push')
+    }
+    console.log(add)
+    if (add) {
+      this.counts += item.count;
+      this.prices += item.price * item.count;
+    } else {
+      this.counts -= item.count;
+      this.prices -= item.price * item.count;
+    }
+    add = false;
     this.setState({
-      data: this.state.data,
-      counts: this.state.counts,
-      prices: this.state.prices
-    });
-
-    /* 是否选择全部商品 */
-    this.refs["all"].className =
-      this.activeNum === this.state.data.length ? "active" : "";
+      checkStateList: this.checkList,
+      prices: this.prices,
+      counts: this.counts
+    })
   }
 
   onAll() {
@@ -69,6 +77,7 @@ class Cart extends Component {
   }
 
   render() {
+    const { checkStateList } = this.state;
     return (
       <div
         style={{
@@ -100,7 +109,7 @@ class Cart extends Component {
               <CartItem key={item.id}>
                 <span
                   onClick={this.onSelect.bind(this, item)}
-                  className={item.active ? "active" : "1"}
+                  className={this.state.checkStateList.some((v) => Boolean(v === item.id)) ? "active" : ""}
                 />
                 <Link to={`/detail/${item.id}`}>
                   <img src={item.src} alt="" />
