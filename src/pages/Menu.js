@@ -46,7 +46,7 @@ class Menu extends Component {
           </div>
         </Link>
         <div style={{ margin: ".25rem auto", textAlign: "center" }}>
-        <Link to='/user/personal' onClick={this.props.menuChange.bind(this,false)}>
+        <Link to='/user' onClick={this.props.menuChange.bind(this,false)}>
           <img
             src={localStorage.head?localStorage.head:head}
             alt="head"

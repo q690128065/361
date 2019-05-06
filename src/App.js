@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Switch, withRouter } from "react-router-dom";
+import { Route, Switch, withRouter, Redirect } from "react-router-dom";
 import storeConnect from "utils/storeConnect";
 import actionCreators from "store/menu/actionCreators";
 
@@ -21,7 +21,8 @@ class App extends Component {
             <Route path="/home" component={Home} />
             <Route path="/user" component={User} />
             <Route path="/list" component={List} />
-            <Route path="/cart" component={Cart} />
+            {localStorage.phone?<Route path="/cart" component={Cart}  />:<Redirect to='/user'/>}
+            
             <Route path="/detail/:id" component={Detail} />
           </Switch>
         </div>

@@ -8,7 +8,7 @@ class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: JSON.parse(localStorage.Cart),
+      data: localStorage.Cart&&JSON.parse(localStorage.Cart)||[],
       counts: 0,
       prices: 0,
       checkStateList: []
@@ -45,7 +45,24 @@ class Cart extends Component {
   }
 
   onAll() {
-    
+    console.log(this.state.data.length)
+    if(this.state.data.length>0&&this.checkList.length!==this.state.data.length){
+      this.checkList = [];
+      this.counts = 0;
+      this.prices = 0;
+      this.state.data.forEach((item)=>{
+        this.onSelect(item)
+      })
+    }else{
+      this.checkList = [];
+      this.counts = 0;
+      this.prices = 0;
+    }
+    this.setState({
+      checkStateList:this.checkList,
+      counts:this.counts,
+      prices:this.prices
+    })
   }
 
   render() {
@@ -99,7 +116,7 @@ class Cart extends Component {
           })}
         </div>
         <SettleBar>
-          <span ref="all" onClick={this.onAll.bind(this)}>
+          <span className={this.state.data.length>0&& this.checkList.length===this.state.data.length ? 'active':''} onClick={this.onAll.bind(this)}>
             全选
           </span>
           <p>

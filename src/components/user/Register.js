@@ -130,7 +130,7 @@ class Register extends Component {
             >
               已有361°商城账号？
             </span>
-            <Link to="/user/login">
+            <Link to="/user">
               <span
                 style={{
                   color: "#f99302",
